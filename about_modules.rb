@@ -1,9 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/neo')
-
+#:nodoc:
 class AboutModules < Neo::Koan
+  #:nodoc:
   module Nameable
-    def set_name(new_name)
-      @name = new_name
+    def name(new_name)
+      @attr_name = new_name
     end
 
     def here
@@ -12,24 +13,24 @@ class AboutModules < Neo::Koan
   end
 
   def test_cant_instantiate_modules
-    assert_raise(___) do
+    assert_raise(NoMethodError) do
       Nameable.new
     end
   end
 
   # ------------------------------------------------------------------
-
+  #:nodoc:
   class Dog
     include Nameable
 
-    attr_reader :name
+    attr_reader :attr_name
 
     def initialize
-      @name = "Fido"
+      @attr_name = 'Fido'
     end
 
     def bark
-      "WOOF"
+      'WOOF'
     end
 
     def here
@@ -39,25 +40,25 @@ class AboutModules < Neo::Koan
 
   def test_normal_methods_are_available_in_the_object
     fido = Dog.new
-    assert_equal __, fido.bark
+    assert_equal 'WOOF', fido.bark
   end
 
   def test_module_methods_are_also_available_in_the_object
     fido = Dog.new
     assert_nothing_raised do
-      fido.set_name("Rover")
+      fido.name('Rover')
     end
   end
 
   def test_module_methods_can_affect_instance_variables_in_the_object
     fido = Dog.new
-    assert_equal __, fido.name
-    fido.set_name("Rover")
-    assert_equal __, fido.name
+    assert_equal 'Fido', fido.attr_name
+    fido.name('Rover')
+    assert_equal 'Rover', fido.attr_name
   end
 
   def test_classes_can_override_module_methods
     fido = Dog.new
-    assert_equal __, fido.here
+    assert_equal :in_object, fido.here
   end
 end
